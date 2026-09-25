@@ -1,0 +1,537 @@
+/**
+ * EIRS Interactive Web Portal UI (HTML, Modern CSS, Interactive JavaScript)
+ */
+function getWebUI() {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EIRS — Equipment Identity Register System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0e1a;
+      --bg-surface: #121829;
+      --bg-card: #182238;
+      --accent: #2563eb;
+      --accent-glow: #3b82f6;
+      --accent-hover: #1d4ed8;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border: #1e293b;
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: radial-gradient(circle at 50% 0%, #172554 0%, var(--bg-primary) 70%);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1150px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2.5rem;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .logo-badge {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      color: #fff;
+      font-weight: 800;
+      font-size: 1.1rem;
+      padding: 0.5rem 0.85rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+    }
+    .logo-text h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .logo-text p {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--success);
+      padding: 0.4rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--success);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--success);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.2); }
+    }
+
+    /* Grid Layout */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+    }
+    @media (max-width: 840px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.8rem;
+      box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+      position: relative;
+    }
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .card-desc {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.25rem;
+    }
+
+    /* Forms & Inputs */
+    .form-group {
+      margin-bottom: 1.15rem;
+    }
+    label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 0.4rem;
+    }
+    input, select {
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent-glow);
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 0.85rem 1.25rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .btn:hover { opacity: 0.95; }
+    .btn:active { transform: scale(0.99); }
+
+    /* Quick Pills */
+    .quick-sample {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.75rem;
+    }
+    .pill {
+      font-size: 0.72rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+    }
+    .pill:hover {
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    /* Result Box */
+    .result-box {
+      margin-top: 1.25rem;
+      padding: 1.25rem;
+      border-radius: 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      display: none;
+    }
+    .result-status {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .badge-COMPLIANT { color: var(--success); }
+    .badge-BLOCKED { color: var(--danger); }
+    .badge-PENDING_DUTY { color: var(--warning); }
+
+    .result-details {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* Stats Bar */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+    @media (max-width: 768px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    .stat-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      text-align: center;
+    }
+    .stat-number {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 0.25rem;
+    }
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Architecture Footer */
+    footer {
+      text-align: center;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.82rem;
+    }
+    .infra-badges {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-top: 0.75rem;
+    }
+    .infra-tag {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="logo">
+        <div class="logo-badge">EIRS</div>
+        <div class="logo-text">
+          <h1>Equipment Identity Register System</h1>
+          <p>National Telecom & Mobile Device Compliance Portal</p>
+        </div>
+      </div>
+      <div class="status-badge">
+        <span class="pulse-dot"></span>
+        <span>AWS System Online</span>
+      </div>
+    </header>
+
+    <!-- Stats Bar -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number" id="stat-latency">34 ms</div>
+        <div class="stat-label">Edge Latency (p95)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">Active</div>
+        <div class="stat-label">CloudFront Global CDN</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">Protected</div>
+        <div class="stat-label">AWS WAF (OWASP Top 10)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">Synchronized</div>
+        <div class="stat-label">Amazon DynamoDB PITR</div>
+      </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="grid-2">
+      <!-- Card 1: IMEI Verification -->
+      <div class="card">
+        <h2 class="card-title">🔍 Verify Device / IMEI</h2>
+        <p class="card-desc">Query national telecom registry for stolen, blocked, or compliant handsets.</p>
+
+        <div class="form-group">
+          <label for="imeiInput">Enter 15-Digit IMEI Number</label>
+          <input type="text" id="imeiInput" placeholder="e.g. 358765091234563" maxlength="16" value="358765091234563">
+        </div>
+
+        <button class="btn" id="verifyBtn" onclick="verifyIMEI()">
+          <span>Run Verification Check</span>
+        </button>
+
+        <div class="quick-sample">
+          <span style="font-size: 0.72rem; color: var(--text-muted); align-self: center;">Try Sample:</span>
+          <button class="pill" onclick="setSample('358765091234563')">✅ Compliant (S24)</button>
+          <button class="pill" onclick="setSample('862934041234560')">❌ Stolen (iPhone)</button>
+          <button class="pill" onclick="setSample('352099101234568')">⚠️ Pending Tax</button>
+        </div>
+
+        <div class="result-box" id="verifyResult">
+          <div class="result-status" id="verifyStatusText"></div>
+          <div class="result-details" id="verifyDetails"></div>
+        </div>
+      </div>
+
+      <!-- Card 2: Device Registration -->
+      <div class="card">
+        <h2 class="card-title">📝 Register New Device</h2>
+        <p class="card-desc">Customs / Carrier batch device enrollment with automated validation.</p>
+
+        <div class="form-group">
+          <label for="regImei">IMEI Number</label>
+          <input type="text" id="regImei" placeholder="15-digit valid IMEI" value="358765091234563">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label for="regBrand">Device Brand</label>
+            <input type="text" id="regBrand" placeholder="e.g. Samsung / Apple" value="Samsung">
+          </div>
+          <div class="form-group">
+            <label for="regModel">Model</label>
+            <input type="text" id="regModel" placeholder="e.g. Galaxy S24" value="Galaxy S24">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="regOperator">Telecommunications Operator</label>
+          <select id="regOperator">
+            <option value="JAZZ-PK">Jazz Telecom</option>
+            <option value="TELENOR-PK">Telenor</option>
+            <option value="ZONG-PK">Zong 4G</option>
+            <option value="UFONE-PK">Ufone 4G</option>
+            <option value="GLOBAL-CARRIER" selected>Global Carrier Sync</option>
+          </select>
+        </div>
+
+        <button class="btn" style="background: linear-gradient(135deg, #059669, #10b981);" onclick="registerDevice()">
+          <span>Enroll Device in Registry</span>
+        </button>
+
+        <div class="result-box" id="regResult">
+          <div class="result-status" id="regStatusText" style="color: var(--success);"></div>
+          <div class="result-details" id="regDetails"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Architecture Topology -->
+    <div class="card" style="margin-bottom: 2.5rem;">
+      <h2 class="card-title">⚡ 7-Layer Live Cloud Architecture</h2>
+      <p class="card-desc">End-to-end request path and operational components currently serving this request.</p>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.75rem; text-align: center;">
+        <div style="background: var(--bg-card); padding: 0.85rem; border-radius: 8px; border: 1px solid var(--border);">
+          <div style="color: #60a5fa; font-weight: 700; font-size: 0.85rem;">1. Edge</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">CloudFront CDN</div>
+        </div>
+        <div style="background: var(--bg-card); padding: 0.85rem; border-radius: 8px; border: 1px solid var(--border);">
+          <div style="color: #f472b6; font-weight: 700; font-size: 0.85rem;">2. Security</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">AWS WAFv2</div>
+        </div>
+        <div style="background: var(--bg-card); padding: 0.85rem; border-radius: 8px; border: 1px solid var(--border);">
+          <div style="color: #34d399; font-weight: 700; font-size: 0.85rem;">3. Runtime</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">App Runner + Lambda</div>
+        </div>
+        <div style="background: var(--bg-card); padding: 0.85rem; border-radius: 8px; border: 1px solid var(--border);">
+          <div style="color: #fbbf24; font-weight: 700; font-size: 0.85rem;">4. Database</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">DynamoDB Key-Value</div>
+        </div>
+        <div style="background: var(--bg-card); padding: 0.85rem; border-radius: 8px; border: 1px solid var(--border);">
+          <div style="color: #a78bfa; font-weight: 700; font-size: 0.85rem;">5. Network</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Multi-AZ VPC</div>
+        </div>
+        <div style="background: var(--bg-card); padding: 0.85rem; border-radius: 8px; border: 1px solid var(--border);">
+          <div style="color: #38bdf8; font-weight: 700; font-size: 0.85rem;">6. Control Plane</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">AWS CLI + Antigravity</div>
+        </div>
+        <div style="background: var(--bg-card); padding: 0.85rem; border-radius: 8px; border: 1px solid var(--border);">
+          <div style="color: #4ade80; font-weight: 700; font-size: 0.85rem;">7. Observability</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">CloudWatch Metrics</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>Equipment Identity Register System (EIRS) — Automated Cloud Architecture by Antigravity</p>
+      <div class="infra-badges">
+        <span class="infra-tag">AWS Region: us-east-1</span>
+        <span class="infra-tag">Amazon CloudFront: d1ahotkoxqfxxm.cloudfront.net</span>
+        <span class="infra-tag">AWS App Runner: ruegfgpdhn.us-east-1.awsapprunner.com</span>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    function setSample(imei) {
+      document.getElementById('imeiInput').value = imei;
+      verifyIMEI();
+    }
+
+    async function verifyIMEI() {
+      const imei = document.getElementById('imeiInput').value.trim();
+      const resultBox = document.getElementById('verifyResult');
+      const statusText = document.getElementById('verifyStatusText');
+      const details = document.getElementById('verifyDetails');
+
+      if (!imei) {
+        alert("Please enter an IMEI number.");
+        return;
+      }
+
+      resultBox.style.display = 'block';
+      statusText.innerHTML = "⏳ Verifying in Registry...";
+      details.innerHTML = "";
+
+      const t0 = performance.now();
+      try {
+        const res = await fetch('/api/v1/devices/verify?imei=' + encodeURIComponent(imei));
+        const data = await res.json();
+        const duration = Math.round(performance.now() - t0);
+        document.getElementById('stat-latency').innerText = duration + ' ms';
+
+        if (res.ok) {
+          const st = data.deviceStatus || 'COMPLIANT';
+          const icon = st === 'COMPLIANT' ? '✅' : (st === 'BLOCKED' ? '❌' : '⚠️');
+          statusText.className = 'result-status badge-' + st;
+          statusText.innerHTML = icon + ' Device Status: ' + st;
+
+          let info = '<strong>IMEI:</strong> ' + data.imei + '<br>';
+          if (data.details) {
+            info += '<strong>Brand:</strong> ' + (data.details.brand || 'N/A') + '<br>';
+            info += '<strong>Model:</strong> ' + (data.details.model || 'N/A') + '<br>';
+            if (data.details.reason) info += '<strong>Reason:</strong> ' + data.details.reason + '<br>';
+          }
+          info += '<span style="font-size: 0.75rem; color: var(--text-muted);">Verified in ' + duration + 'ms via CloudFront Edge</span>';
+          details.innerHTML = info;
+        } else {
+          statusText.className = 'result-status badge-BLOCKED';
+          statusText.innerHTML = '⚠️ Validation Failed (' + res.status + ')';
+          details.innerHTML = data.message || 'Invalid IMEI or request format.';
+        }
+      } catch (err) {
+        statusText.className = 'result-status badge-BLOCKED';
+        statusText.innerHTML = '❌ Network Error';
+        details.innerHTML = err.message;
+      }
+    }
+
+    async function registerDevice() {
+      const imei = document.getElementById('regImei').value.trim();
+      const brand = document.getElementById('regBrand').value.trim();
+      const model = document.getElementById('regModel').value.trim();
+      const operator = document.getElementById('regOperator').value;
+
+      const resultBox = document.getElementById('regResult');
+      const statusText = document.getElementById('regStatusText');
+      const details = document.getElementById('regDetails');
+
+      resultBox.style.display = 'block';
+      statusText.innerHTML = "⏳ Enrolling...";
+      details.innerHTML = "";
+
+      try {
+        const res = await fetch('/api/v1/devices/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ imei, brand, model, operator })
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          statusText.innerHTML = "✅ Device Registered Successfully!";
+          details.innerHTML = '<strong>Record ID:</strong> ' + data.record.brand + ' ' + data.record.model + '<br>' +
+                              '<strong>Operator:</strong> ' + data.record.operator + '<br>' +
+                              '<strong>Timestamp:</strong> ' + data.record.registeredAt;
+        } else {
+          statusText.style.color = 'var(--danger)';
+          statusText.innerHTML = "❌ Registration Failed (" + res.status + ")";
+          details.innerHTML = data.message || 'Validation error.';
+        }
+      } catch (err) {
+        statusText.style.color = 'var(--danger)';
+        statusText.innerHTML = "❌ Network Error";
+        details.innerHTML = err.message;
+      }
+    }
+  </script>
+</body>
+</html>`;
+}
+
+module.exports = { getWebUI };

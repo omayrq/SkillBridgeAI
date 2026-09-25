@@ -1,0 +1,51 @@
+name: CI - Build, Test & Security Scan
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main", "develop" ]
+
+jobs:
+  validate-and-test:
+    name: Lint, Unit Test & SAST Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js Runtime
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        run: |
+          cd src/api
+          npm install
+
+      - name: Execute QA Unit & Contract Tests
+        run: |
+          node --test tests/**/*.test.js
+
+      - name: Static Application Security Testing (SAST - Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '0'
+
+      - name: Validate AWS CLI Scripts Syntax
+        shell: pwsh
+        run: |
+          $scripts = Get-ChildItem -Path scripts/aws-cli/*.ps1
+          foreach ($script in $scripts) {
+              Write-Host "Validating syntax: $($script.Name)"
+              $errors = $null
+              [System.Management.Automation.Language.Parser]::ParseFile($script.FullName, [ref]$null, [ref]$errors)
+              if ($errors) {
+                  throw "Syntax errors detected in $($script.Name)"
+              }
+          }
+          Write-Host "All AWS CLI control plane scripts passed syntax validation."

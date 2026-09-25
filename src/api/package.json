@@ -1,0 +1,13 @@
+{
+  "name": "eirs-api-service",
+  "version": "1.0.0",
+  "description": "Equipment Identity Register System (EIRS) Core Microservice API",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --test tests/unit/*.test.js",
+    "start": "node index.js"
+  },
+  "keywords": ["eirs", "telecom", "imei", "aws", "lambda"],
+  "author": "Antigravity Engineering",
+  "license": "UNLICENSED"
+}

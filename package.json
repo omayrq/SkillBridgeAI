@@ -1,0 +1,36 @@
+{
+  "name": "skillbridge-ai",
+  "version": "1.0.0",
+  "description": "SkillBridge AI - Turn your current skills into your next career milestone (AWS Zero to Shipped Hackathon)",
+  "main": "src/api/index.js",
+  "scripts": {
+    "start": "node src/api/server.js",
+    "test": "jest --runInBand",
+    "test:unit": "jest tests/unit",
+    "test:api": "jest tests/api",
+    "test:security": "jest tests/security"
+  },
+  "keywords": [
+    "aws",
+    "bedrock",
+    "cognito",
+    "dynamodb",
+    "amplify",
+    "hackathon",
+    "education",
+    "ai"
+  ],
+  "author": "SkillBridge AI Team",
+  "license": "MIT",
+  "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.600.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.600.0",
+    "@aws-sdk/client-dynamodb": "^3.600.0",
+    "@aws-sdk/client-s3": "^3.600.0",
+    "@aws-sdk/lib-dynamodb": "^3.600.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0"
+  }
+}

@@ -1,0 +1,46 @@
+name: Deploy - DEV Environment
+
+on:
+  push:
+    branches: [ "develop" ]
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy-dev:
+    name: Deploy & Smoke Test (DEV)
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION || 'us-east-1' }}
+
+      - name: Pre-Flight Check
+        shell: pwsh
+        run: |
+          ./scripts/aws-cli/00-verify-prereqs.ps1 -Environment dev -Region ${{ secrets.AWS_REGION || 'us-east-1' }}
+
+      - name: Provision Infrastructure & Deploy API
+        shell: pwsh
+        run: |
+          ./scripts/aws-cli/01-bootstrap-env.ps1 -Environment dev -Region ${{ secrets.AWS_REGION || 'us-east-1' }}
+          ./scripts/aws-cli/02-deploy-network.ps1 -Environment dev -Region ${{ secrets.AWS_REGION || 'us-east-1' }}
+          ./scripts/aws-cli/03-deploy-security.ps1 -Environment dev -Region ${{ secrets.AWS_REGION || 'us-east-1' }}
+          ./scripts/aws-cli/04-deploy-data.ps1 -Environment dev -Region ${{ secrets.AWS_REGION || 'us-east-1' }}
+          ./scripts/aws-cli/05-deploy-api.ps1 -Environment dev -Region ${{ secrets.AWS_REGION || 'us-east-1' }}
+          ./scripts/aws-cli/06-deploy-edge.ps1 -Environment dev -Region ${{ secrets.AWS_REGION || 'us-east-1' }}
+
+      - name: Run Synthetic Smoke Health Check
+        shell: pwsh
+        run: |
+          ./scripts/aws-cli/07-health-check.ps1 -Environment dev -MaxLatencyMs 500

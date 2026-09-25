@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkillBridge AI — Turn your current skills into your next career milestone</title>
+  <meta name="description" content="SkillBridge AI analyzes your current skills, identifies skill gaps, and generates a personalized AWS learning roadmap with an AI Mentor.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- Header & Navigation -->
+  <header>
+    <div class="nav-container">
+      <a href="#" class="brand" onclick="switchView('landing'); return false;">
+        <div class="brand-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+        <span>SkillBridge AI</span>
+        <span class="brand-tag">AWS #community</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#" class="nav-link active" id="nav-landing" onclick="switchView('landing'); return false;">Home</a></li>
+        <li><a href="#" class="nav-link" id="nav-dashboard" onclick="switchView('dashboard'); return false;">Dashboard</a></li>
+        <li><a href="#" class="nav-link" id="nav-assessment" onclick="switchView('assessment'); return false;">Assessment</a></li>
+        <li><a href="#" class="nav-link" id="nav-roadmap" onclick="switchView('roadmap'); return false;">Roadmap</a></li>
+        <li><a href="#" class="nav-link" id="nav-mentor" onclick="switchView('mentor'); return false;">AI Mentor</a></li>
+        <li><a href="#" class="nav-link" id="nav-challenges" onclick="switchView('challenges'); return false;">Challenges</a></li>
+      </ul>
+
+      <div class="user-badge" id="auth-controls">
+        <div class="user-avatar" id="user-avatar-initials">G</div>
+        <span id="user-display-name" style="font-size: 0.9rem; font-weight: 600;">Guest Learner</span>
+        <button class="btn btn-sm btn-secondary" id="auth-btn" onclick="openAuthModal()"><i class="fa-solid fa-right-to-bracket"></i> Sign In</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- View 1: Landing Page -->
+  <main id="view-landing" class="view-section">
+    <section class="hero">
+      <div class="hero-pill"><i class="fa-solid fa-sparkles"></i> Hackathon Category: #social-good</div>
+      <h1 class="hero-title">Turn your current skills into your next career milestone.</h1>
+      <p class="hero-subtext">SkillBridge AI analyzes what you know, understands where you want to go, and creates a practical learning roadmap to help you get there.</p>
+      
+      <div class="hero-actions">
+        <button class="btn btn-primary" onclick="switchView('assessment')"><i class="fa-solid fa-compass"></i> Build My Roadmap</button>
+        <button class="btn btn-secondary" onclick="scrollToSection('how-it-works')"><i class="fa-solid fa-circle-play"></i> Explore How It Works</button>
+      </div>
+
+      <!-- 3 Key Benefits -->
+      <div class="features-grid">
+        <div class="card">
+          <div class="card-icon"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+          <h3 class="card-title">Discover your skill gaps</h3>
+          <p class="card-desc">Instantly identify the critical technical missing links between your current role and your dream AWS cloud position.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon"><i class="fa-solid fa-map-location-dot"></i></div>
+          <h3 class="card-title">Get a personalized roadmap</h3>
+          <p class="card-desc">Receive a custom week-by-week schedule powered by Amazon Bedrock tailored to your available weekly hours.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon"><i class="fa-solid fa-terminal"></i></div>
+          <h3 class="card-title">Learn through practical projects</h3>
+          <p class="card-desc">Practice with hands-on architecture challenges, receive AI Mentor guidance, and track verifiable progress.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="steps-wrapper">
+      <div class="container" style="text-align: center;">
+        <h2 class="section-title">How SkillBridge AI Works</h2>
+        <p class="section-subtitle">Transform scattered tutorials into a clear, actionable path in 4 steps</p>
+        
+        <div class="steps-grid">
+          <div class="step-card">
+            <div class="step-num">01</div>
+            <h4 class="step-title">Tell us what you know</h4>
+            <p class="step-desc">Enter your current role, technical skills, and weekly learning availability.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-num">02</div>
+            <h4 class="step-title">Choose where you want to go</h4>
+            <p class="step-desc">Select your target position, such as AWS Solutions Architect or Cloud Engineer.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-num">03</div>
+            <h4 class="step-title">Get your personalized roadmap</h4>
+            <p class="step-desc">Amazon Bedrock analyzes gaps and builds a prioritized learning trajectory.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-num">04</div>
+            <h4 class="step-title">Learn, practice, and track</h4>
+            <p class="step-desc">Complete hands-on challenges, consult your AI Mentor, and track progress live.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- View 2: Skill Assessment Form -->
+  <main id="view-assessment" class="view-section" style="display: none;">
+    <div class="container" style="max-width: 700px;">
+      <div class="card">
+        <h2 class="section-title"><i class="fa-solid fa-clipboard-question" style="color: var(--primary);"></i> Skill Assessment</h2>
+        <p class="section-subtitle">Tell us about your background so Amazon Bedrock can generate your custom career roadmap.</p>
+        
+        <form id="assessment-form" onsubmit="handleAssessmentSubmit(event)">
+          <div class="form-group">
+            <label class="form-label" for="user-name">Your Full Name *</label>
+            <input type="text" id="user-name" class="form-control" placeholder="e.g. Alex Johnson" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="current-role">Current Role *</label>
+              <select id="current-role" required>
+                <option value="">Select current role...</option>
+                <option value="Student">Student / Technology Learner</option>
+                <option value="Junior Developer">Junior Web Developer</option>
+                <option value="SysAdmin">Systems Administrator</option>
+                <option value="DevOps Beginner">DevOps Enthusiast</option>
+                <option value="Data Analyst">Data Analyst</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="experience-level">Experience Level *</label>
+              <select id="experience-level" required>
+                <option value="Beginner">Beginner (0-1 yrs)</option>
+                <option value="Intermediate">Intermediate (1-3 yrs)</option>
+                <option value="Advanced">Advanced (3+ yrs)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="current-skills">Current Technical Skills (comma separated) *</label>
+            <input type="text" id="current-skills" class="form-control" placeholder="e.g. Python, SQL, Linux, AWS S3, HTML" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="target-role">Target Role / Destination *</label>
+              <select id="target-role" required>
+                <option value="AWS Solutions Architect">AWS Solutions Architect</option>
+                <option value="Cloud DevOps Engineer">Cloud DevOps Engineer</option>
+                <option value="Serverless Full-Stack Engineer">Serverless Full-Stack Engineer</option>
+                <option value="AWS Cloud Security Specialist">AWS Cloud Security Specialist</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="weekly-hours">Weekly Learning Time (Hours) *</label>
+              <select id="weekly-hours" required>
+                <option value="4">4 Hours / Week</option>
+                <option value="6" selected>6 Hours / Week</option>
+                <option value="10">10 Hours / Week</option>
+                <option value="15">15+ Hours / Week (Intensive)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="learning-preferences">Learning Preferences (Optional)</label>
+            <input type="text" id="learning-preferences" class="form-control" placeholder="e.g. Hands-on labs, visual diagrams, CLI practice">
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;" id="submit-assessment-btn">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Generate AI Skill Gap & Roadmap
+          </button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- View 3: Dashboard -->
+  <main id="view-dashboard" class="view-section" style="display: none;">
+    <div class="container">
+      <div class="dashboard-grid">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+          <ul class="sidebar-menu">
+            <li class="sidebar-item active" onclick="switchView('dashboard')"><i class="fa-solid fa-chart-line"></i> Dashboard Overview</li>
+            <li class="sidebar-item" onclick="switchView('roadmap')"><i class="fa-solid fa-road"></i> Learning Roadmap</li>
+            <li class="sidebar-item" onclick="switchView('mentor')"><i class="fa-solid fa-robot"></i> AI Mentor Chat</li>
+            <li class="sidebar-item" onclick="switchView('challenges')"><i class="fa-solid fa-code"></i> Practical Challenges</li>
+            <li class="sidebar-item" onclick="switchView('assessment')"><i class="fa-solid fa-sliders"></i> Edit Profile</li>
+          </ul>
+        </aside>
+
+        <!-- Main Dashboard Content -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          <!-- Welcome Card -->
+          <div class="card" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2)); border-color: rgba(99, 102, 241, 0.4);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+              <div>
+                <h2 style="font-family: var(--font-heading); font-size: 1.75rem;">Welcome back, <span id="dash-user-name">Learner</span>!</h2>
+                <p style="color: var(--text-muted); margin-top: 0.25rem;">Target Role: <strong id="dash-target-role" style="color: var(--accent-cyan);">AWS Solutions Architect</strong></p>
+              </div>
+              <button class="btn btn-sm btn-primary" onclick="switchView('mentor')"><i class="fa-solid fa-comments"></i> Ask AI Mentor</button>
+            </div>
+
+            <!-- Progress Meter -->
+            <div style="margin-top: 1.5rem;">
+              <div style="display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 600;">
+                <span>Overall Roadmap Completion</span>
+                <span id="dash-progress-pct" style="color: var(--accent-green);">0%</span>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="dash-progress-fill" style="width: 0%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3-Column Metrics Summary -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            <div class="card" style="padding: 1.25rem;">
+              <div style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600;">CURRENT FOCUS</div>
+              <div id="dash-current-focus" style="font-size: 1.25rem; font-weight: 700; margin-top: 0.4rem; color: var(--accent-cyan);">IAM & VPC</div>
+            </div>
+            <div class="card" style="padding: 1.25rem;">
+              <div style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600;">TASKS COMPLETED</div>
+              <div id="dash-completed-count" style="font-size: 1.25rem; font-weight: 700; margin-top: 0.4rem; color: var(--accent-green);">0 / 12</div>
+            </div>
+            <div class="card" style="padding: 1.25rem;">
+              <div style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600;">CURRENT WEEK</div>
+              <div id="dash-current-week" style="font-size: 1.25rem; font-weight: 700; margin-top: 0.4rem; color: var(--secondary);">Week 1</div>
+            </div>
+          </div>
+
+          <!-- Skill Gap Summary Table -->
+          <div class="card">
+            <h3 class="card-title" style="margin-bottom: 1rem;"><i class="fa-solid fa-list-check" style="color: var(--primary);"></i> AI Skill Gap Priority Matrix</h3>
+            <div id="dash-skill-gap-list">
+              <p style="color: var(--text-dim); text-align: center; padding: 2rem;">No skill assessment found. <a href="#" onclick="switchView('assessment'); return false;" style="color: var(--primary);">Complete assessment</a> to populate.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- View 4: Personalized Roadmap -->
+  <main id="view-roadmap" class="view-section" style="display: none;">
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap;">
+        <div>
+          <h2 class="section-title"><i class="fa-solid fa-route" style="color: var(--secondary);"></i> Personalized Learning Roadmap</h2>
+          <p style="color: var(--text-muted);">Custom weekly trajectory generated by Amazon Bedrock based on your target role and available hours.</p>
+        </div>
+        <button class="btn btn-sm btn-secondary" onclick="switchView('assessment')"><i class="fa-solid fa-rotate"></i> Regenerate Roadmap</button>
+      </div>
+
+      <div id="roadmap-weeks-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <!-- Dynamic Weeks populate here -->
+        <p style="color: var(--text-dim); text-align: center; padding: 3rem;">Complete your skill assessment to unlock your personalized roadmap.</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- View 5: AI Mentor Chat -->
+  <main id="view-mentor" class="view-section" style="display: none;">
+    <div class="container" style="max-width: 900px;">
+      <div style="margin-bottom: 1.5rem;">
+        <h2 class="section-title"><i class="fa-solid fa-robot" style="color: var(--accent-cyan);"></i> AI Learning Mentor</h2>
+        <p style="color: var(--text-muted);">Powered by Amazon Bedrock. Context-aware tutor tailored to your specific roadmap and target role.</p>
+      </div>
+
+      <div class="chat-window">
+        <div class="chat-header">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <div style="width: 12px; height: 12px; background: var(--accent-green); border-radius: 50%;"></div>
+            <strong style="font-size: 0.95rem;">SkillBridge AI Mentor</strong>
+          </div>
+          <span style="font-size: 0.8rem; color: var(--text-dim);" id="mentor-context-tag">Context: AWS Solutions Architect</span>
+        </div>
+
+        <div class="chat-messages" id="chat-messages">
+          <div class="chat-bubble chat-bubble-ai">
+            👋 Hello! I am your SkillBridge AI Mentor. I have reviewed your skill assessment and roadmap. How can I help you master your AWS learning goals today?
+          </div>
+        </div>
+
+        <div class="prompt-suggestions">
+          <button class="chip-btn" onclick="sendPromptSuggestion('Explain VPC to me like a beginner.')">💡 Explain VPC like a beginner</button>
+          <button class="chip-btn" onclick="sendPromptSuggestion('Give me a practical IAM exercise.')">🔑 Practical IAM exercise</button>
+          <button class="chip-btn" onclick="sendPromptSuggestion('What should I learn after EC2?')">⚡ What after EC2?</button>
+          <button class="chip-btn" onclick="sendPromptSuggestion('Why do I need private subnets?')">🛡️ Why private subnets?</button>
+        </div>
+
+        <form class="chat-input-area" onsubmit="handleChatSubmit(event)">
+          <input type="text" id="chat-input" class="form-control" placeholder="Ask your AI mentor anything about your AWS roadmap..." required>
+          <button type="submit" class="btn btn-primary" id="chat-send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- View 6: Hands-on Challenges Hub -->
+  <main id="view-challenges" class="view-section" style="display: none;">
+    <div class="container">
+      <div style="margin-bottom: 1.5rem;">
+        <h2 class="section-title"><i class="fa-solid fa-cubes-stacked" style="color: var(--accent-amber);"></i> Hands-On Architecture Challenges</h2>
+        <p style="color: var(--text-muted);">Turn theoretical knowledge into real-world AWS experience.</p>
+      </div>
+
+      <div id="challenges-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+        <!-- Dynamic Challenges Render Here -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Auth Modal -->
+  <div class="modal-overlay" id="auth-modal">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h3 style="font-family: var(--font-heading); font-size: 1.25rem;" id="auth-modal-title">Sign In to SkillBridge AI</h3>
+        <button class="btn btn-sm btn-ghost" onclick="closeAuthModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form id="auth-form" onsubmit="handleAuthSubmit(event)">
+        <div class="form-group">
+          <label class="form-label" for="auth-email">Email Address</label>
+          <input type="email" id="auth-email" class="form-control" placeholder="name@example.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="auth-password">Password</label>
+          <input type="password" id="auth-password" class="form-control" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;" id="auth-submit-btn">Sign In</button>
+      </form>
+
+      <div style="text-align: center; margin-top: 1.25rem; font-size: 0.85rem; color: var(--text-muted);">
+        <span id="auth-toggle-text">Don't have an account?</span> 
+        <a href="#" id="auth-toggle-link" onclick="toggleAuthMode(); return false;" style="color: var(--primary); font-weight: 600;">Sign Up</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast" class="toast">
+    <i class="fa-solid fa-circle-check" style="color: var(--accent-green); font-size: 1.2rem;"></i>
+    <span id="toast-message">Notification message</span>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

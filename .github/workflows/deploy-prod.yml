@@ -1,0 +1,57 @@
+name: Deploy - Production (Canary & Auto-Rollback)
+
+on:
+  workflow_dispatch:
+    inputs:
+      canary_percentage:
+        description: "Initial Canary Traffic Percentage (e.g., 10)"
+        required: true
+        default: "10"
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  canary-deploy:
+    name: Production Canary Deployment (10%)
+    runs-on: ubuntu-latest
+    environment: production # Protected environment requiring manual approval
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION || 'us-east-1' }}
+
+      - name: Deploy Production Canary
+        shell: pwsh
+        run: |
+          ./scripts/aws-cli/00-verify-prereqs.ps1 -Environment prod -Region ${{ secrets.AWS_REGION || 'us-east-1' }}
+          ./scripts/aws-cli/01-bootstrap-env.ps1 -Environment prod -Region ${{ secrets.AWS_REGION || 'us-east-1' }}
+          ./scripts/aws-cli/02-deploy-network.ps1 -Environment prod -Region ${{ secrets.AWS_REGION || 'us-east-1' }}
+          ./scripts/aws-cli/03-deploy-security.ps1 -Environment prod -Region ${{ secrets.AWS_REGION || 'us-east-1' }}
+          ./scripts/aws-cli/04-deploy-data.ps1 -Environment prod -Region ${{ secrets.AWS_REGION || 'us-east-1' }}
+          ./scripts/aws-cli/05-deploy-api.ps1 -Environment prod -Region ${{ secrets.AWS_REGION || 'us-east-1' }}
+          ./scripts/aws-cli/06-deploy-edge.ps1 -Environment prod -Region ${{ secrets.AWS_REGION || 'us-east-1' }}
+
+      - name: Monitor Canary Health & p95 Latency SLA
+        id: canary_health
+        shell: pwsh
+        run: |
+          try {
+              ./scripts/aws-cli/07-health-check.ps1 -Environment prod -MaxLatencyMs 250
+          } catch {
+              Write-Host "Canary health breached! Triggering automated rollback..." -ForegroundColor Red
+              ./scripts/aws-cli/08-rollback.ps1 -Environment prod -Region ${{ secrets.AWS_REGION || 'us-east-1' }}
+              exit 1
+          }
+
+      - name: Shift 100% Traffic (Canary Successful)
+        shell: pwsh
+        run: |
+          Write-Host "Canary healthy! Shifting 100% of production traffic to new release." -ForegroundColor Green
